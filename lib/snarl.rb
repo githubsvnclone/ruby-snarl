@@ -19,6 +19,7 @@ class Snarl
     SNARL_REVOKE_CONFIG_WINDOW = 7
     SNARL_TEXT_LENGTH = 1024
     WM_COPYDATA = 0x4a
+    DEFAULT_TIMEOUT = 3
   
     SnarlStruct = struct [
       "int cmd",
@@ -54,16 +55,16 @@ class Snarl
   
   include SnarlAPI
   
-  def initialize(title, msg=" ", icon=nil, timeout=10)
+  def initialize(title, msg=" ", icon=nil, timeout=DEFAULT_TIMEOUT)
     @ss = SnarlStruct.malloc
     show(title, msg, icon, timeout)
   end
       
-  def self.show_message(title, msg=" ", icon=nil, timeout=10)
+  def self.show_message(title, msg=" ", icon=nil, timeout=DEFAULT_TIMEOUT)
     Snarl.new(title, msg, icon, timeout).id
   end
 
-  def show(title,msg=" ", icon=nil, timeout=10)
+  def show(title,msg=" ", icon=nil, timeout=DEFAULT_TIMEOUT)
     @ss.title = SnarlAPI.to_cha(title)
     @ss.text = SnarlAPI.to_cha(msg)
     icon = File.expand_path(icon)
@@ -77,7 +78,8 @@ class Snarl
     @ss.cmd = SNARL_UPDATE
     @ss.title = SnarlAPI.to_cha(title)
     @ss.text = SnarlAPI.to_cha(msg)
-    @ss.icon = SnarlAPI.to_cha(icon) if icon
+    icon = File.expand_path(icon)
+    @ss.icon = SnarlAPI.to_cha(icon) if icon && File.exist?(icon)
     send?    
   end
   
