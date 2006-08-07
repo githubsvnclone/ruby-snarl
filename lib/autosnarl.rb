@@ -11,8 +11,8 @@ module AutoSnarl
     }
   end
   
-  def self.snarl title, msg, ico = nil, time=2
-    Snarl.show_message(title, msg, icon[ico], time)
+  def self.snarl title, msg, ico = nil
+    Snarl.show_message(title, msg, icon[ico])
   end
 
   Autotest.add_hook :run do  |at|
