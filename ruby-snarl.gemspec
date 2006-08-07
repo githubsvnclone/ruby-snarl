@@ -12,7 +12,7 @@ spec = Gem::Specification.new do |s|
   s.autorequire = "ruby-snarl"
 end
 
-if  __FILE__ == $PROGRAMNAME
+if  __FILE__ == $PROGRAM_NAME
   Gem::manage_gems
   Gem::Builder.new(spec).build
 end
