@@ -11,8 +11,8 @@ module AutoSnarl
     }
   end
   
-  def self.snarl title, msg, icon = nil, time=2
-    Snarl.show_message(title, msg, icon, time)
+  def self.snarl title, msg, ico = nil, time=2
+    Snarl.show_message(title, msg, icon[ico], time)
   end
 
   Autotest.add_hook :run do  |at|
@@ -21,27 +21,27 @@ module AutoSnarl
 
   Autotest.add_hook :red do |at|
     failed_tests = at.files_to_test.inject(0){ |s,a| k,v = a;  s + v.size}
-    snarl "Tests Failed", "#{failed_tests} tests failed", 2, icon[:red]
+    snarl "Tests Failed", "#{failed_tests} tests failed", :red
   end
 
   Autotest.add_hook :green do |at|
-    snarl "Tests Passed", "All tests passed", 2, icon[:green] #if at.tainted 
+    snarl "Tests Passed", "All tests passed", :green #if at.tainted 
   end
 
   Autotest.add_hook :run do |at|
-    snarl "autotest", "autotest was started", 2, icon[:info] unless $TESTING
+    snarl "autotest", "autotest was started", :info unless $TESTING
   end
 
   Autotest.add_hook :interrupt do |at|
-    snarl "autotest", "autotest was reset", 2, icon[:info] unless $TESTING
+    snarl "autotest", "autotest was reset", :info unless $TESTING
   end
 
   Autotest.add_hook :quit do |at|
-    snarl "autotest", "autotest is exiting", 2, icon[:info] unless $TESTING
+    snarl "autotest", "autotest is exiting", :info unless $TESTING
   end
 
   Autotest.add_hook :all do |at|_hook
-    snarl "autotest", "Tests have fully passed", 2, icon[:green] unless $TESTING
+    snarl "autotest", "Tests have fully passed", :green unless $TESTING
   end
 
 end
