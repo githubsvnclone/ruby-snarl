@@ -70,17 +70,24 @@ class Snarl
   
   include SnarlAPI  
   DEFAULT_TIMEOUT = 3
+  NO_TIMEOUT = 0
   
   # Create a new snarl message, the only thing you need to send is a title
   # note that if you decide to send an icon, you must provide the complete
-  # path
+  # path. The timeout file has a default value (DEFAULT_TIMEOUT -> 3 seconds)
+  # but can be set to Snarl::NO_TIMEOUT, to force a manual acknowledgement
+  # of the notification.
   def initialize(title, msg=" ", icon=nil, timeout=DEFAULT_TIMEOUT)
     @ss = SnarlStruct.malloc
     show(title, msg, icon, timeout)
   end
       
   # a quick and easy method to create a new message, when you don't care
-  # to access it again
+  # to access it again.
+  # Note that if you decide to send an icon, you must provide the complete
+  # path. The timeout file has a default value (DEFAULT_TIMEOUT -> 3 seconds)
+  # but can be set to Snarl::NO_TIMEOUT, to force a manual acknowledgement
+  # of the notification.
   def self.show_message(title, msg=" ", icon=nil, timeout=DEFAULT_TIMEOUT)
     Snarl.new(title, msg, icon, timeout)
   end
@@ -88,12 +95,19 @@ class Snarl
   # Update an existing message, it will return true/false depending upon
   # success (it will fail if the message has already timed out or been 
   # dismissed)
-  def update(title,msg=" ",icon=nil)
+  # Note that if you decide to send an icon, you must provide the complete
+  # path. The timeout file has a default value (DEFAULT_TIMEOUT -> 3 seconds)
+  # but can be set to Snarl::NO_TIMEOUT, to force a manual acknowledgement
+  # of the notification.
+  def update(title,msg=" ",icon=nil, timeout=DEFAULT_TIMEOUT)
     @ss.cmd = SNARL_UPDATE
     @ss.title = SnarlAPI.to_cha(title)
     @ss.text = SnarlAPI.to_cha(msg)
-    icon = File.expand_path(icon)
-    @ss.icon = SnarlAPI.to_cha(icon) if icon && File.exist?(icon)
+    if icon
+      icon = File.expand_path(icon)
+      @ss.icon = SnarlAPI.to_cha(icon) if File.exist?(icon.to_s)
+    end
+    @ss.timeout = timeout
     send?    
   end
   
